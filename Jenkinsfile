@@ -19,6 +19,7 @@ pipeline {
             steps {
                 script {
                     // luân phiên blue/green
+                    kubectl apply -f services.yaml -n $NAMESPACE
                     def currentVersion = sh(script: "kubectl get svc app-service -n $NAMESPACE -o jsonpath='{.spec.selector.version}'", returnStdout: true).trim()
                     def newVersion = (currentVersion == 'blue') ? 'green' : 'blue'
                     env.NEW_VERSION = newVersion

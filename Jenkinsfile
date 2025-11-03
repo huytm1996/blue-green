@@ -4,6 +4,8 @@ pipeline {
     environment {
         REGISTRY = "huytm1996/demo"
         NAMESPACE = "prod"
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds')
+        DOCKER_IMAGE = 'huytm1996/html-app'
     }
 
     stages {
@@ -17,7 +19,6 @@ pipeline {
             steps {
                 script {
                     // luân phiên blue/green
-                    kubectl apply -f services.yaml
                     def currentVersion = sh(script: "kubectl get svc app-service -n $NAMESPACE -o jsonpath='{.spec.selector.version}'", returnStdout: true).trim()
                     def newVersion = (currentVersion == 'blue') ? 'green' : 'blue'
                     env.NEW_VERSION = newVersion
@@ -28,12 +29,12 @@ pipeline {
 
         stage('Push to DockerHub') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+               
                     sh '''
-                    echo "$PASS" | docker login -u "$USER" --password-stdin
+                   echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
                     docker push $REGISTRY:$NEW_VERSION
                     '''
-                }
+                
             }
         }
 

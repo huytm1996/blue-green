@@ -1,2 +1,13 @@
-FROM nginx:alpine
-COPY index.html /usr/share/nginx/html/index.html
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-service
+  labels:
+    app: app
+spec:
+  selector:
+    version: blue
+  ports:
+    - port: 80
+      targetPort: 80
+  type: NodePort

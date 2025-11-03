@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/huytm1996/blue-green-demo.git'
+                git branch: 'main', url: 'https://github.com/huytm1996/blue-green.git'
             }
         }
 
